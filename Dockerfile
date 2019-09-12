@@ -1,7 +1,12 @@
 FROM gusdecool/httpd
 
 WORKDIR /app
+
+# Inherited ENVs
 ENV PUBLIC_DIR /app/build
+
+# Local ENVs
+ENV USER_HOME_DIR /root
 
 #--------------------------------------------------------------------------------------------------
 # Install base package
@@ -22,20 +27,15 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update && apt-get install -y yarn
 
 #--------------------------------------------------------------------------------------------------
-# Create & use "app" user
-#
-# We didn't use "root", because package manager like "npm" and "composer" will not execute
-# some script like "npm run prepare" if we use "root" user.
+# Skip Host verification for git
 #--------------------------------------------------------------------------------------------------
 
-ENV USER_HOME_DIR /home/app
-
-RUN useradd -rm -d ${USER_HOME_DIR} -s /bin/bash -g root -G sudo -u 1000 app
-RUN chown app /app
-
-# From here, we switch user to "app"
-USER app
-
-# Skip Host verification for git
 RUN mkdir ${USER_HOME_DIR}/.ssh/
 RUN echo "StrictHostKeyChecking no " > ${USER_HOME_DIR}/.ssh/config
+
+#--------------------------------------------------------------------------------------------------
+# NPM setup
+#--------------------------------------------------------------------------------------------------
+
+# Allow root user to execute script command
+RUN npm config set unsafe-perm true

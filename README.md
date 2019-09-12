@@ -36,11 +36,11 @@ docker push vvvroom/reactjs
 
 ### SSH Private Key
 Since most of the time we will most likely install a package from git private repositories.
-We will need to sync our OS private key file into Docker root user location at `/home/app/.ssh/id_rsa`
+We will need to sync our OS private key file into Docker root user location at `/root/.ssh/id_rsa`
 To do that, we can do that using volume option like example below.
 
 Note that we're using mounting `ro` read only option for safety purpose docker not overwrite our private keys.
 
 ```
--v ~/.ssh/id_rsa:/home/app/.ssh/id_rsa:ro
+-v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro
 ``` 
