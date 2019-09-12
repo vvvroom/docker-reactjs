@@ -8,6 +8,7 @@ This is docker base image to run application that using Reactjs. This image have
 ## Requirements:
 
 1. The docker image is expecting the volume mounted to `/app` directory and the web public directory located at `/app/build`
+2. If you would like to sync your OS private key, you will need to put your private key in `/home/app/.ssh` dir in container.
 
 ## Docker commands
 
