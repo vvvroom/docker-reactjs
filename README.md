@@ -8,7 +8,6 @@ This is docker base image to run application that using Reactjs. This image have
 ## Requirements:
 
 1. The docker image is expecting the volume mounted to `/app` directory and the web public directory located at `/app/build`
-2. If you would like to sync your OS private key, you will need to put your private key in `/home/app/.ssh` dir in container.
 
 ## Docker commands
 
@@ -37,11 +36,11 @@ docker push vvvroom/reactjs
 
 ### SSH Private Key
 Since most of the time we will most likely install a package from git private repositories.
-We will need to sync our OS private key file into Docker root user location at `/root/.ssh/id_rsa`
+We will need to sync our OS private key file into Docker root user location at `/home/app/.ssh/id_rsa`
 To do that, we can do that using volume option like example below.
 
 Note that we're using mounting `ro` read only option for safety purpose docker not overwrite our private keys.
 
 ```
--v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro
+-v ~/.ssh/id_rsa:/home/app/.ssh/id_rsa:ro
 ``` 
