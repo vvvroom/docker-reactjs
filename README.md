@@ -26,6 +26,14 @@ docker run --rm \
     vvvroom/reactjs
 ```
 
+### Debug
+
+Command below will SSH into the containers
+
+```shell script
+docker run --rm -it vvvroom/reactjs bash
+```
+
 ### Push 
 
 ```shell script
