@@ -39,7 +39,11 @@ RUN npm config set unsafe-perm true
 
 # Set Apache root directory
 ENV APACHE_DOCUMENT_ROOT /app/build
-RUN sed -ri -e 's!/usr/local/apache2/htdocs!${APACHE_DOCUMENT_ROOT}!g' /usr/local/apache2/conf/httpd.conf
+RUN sed -ri \
+    -e 's!/usr/local/apache2/htdocs!${APACHE_DOCUMENT_ROOT}!g' \
+    -e 's!AllowOverride None!AllowOverride All!g' \
+    /usr/local/apache2/conf/httpd.conf
+RUN sed -i -e 's/^#\(LoadModule .*mod_rewrite.so\)/\1/' /usr/local/apache2/conf/httpd.conf
 
 # Setup SSL
 COPY ./ssl-certificate /ssl-certificate
