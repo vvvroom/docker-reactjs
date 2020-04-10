@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  app:
+    image: vvvroom/reactjs
+    build: ./
+    volumes:
+      - ./app:/app
+      - npm_cache:/root/.npm
+    ports:
+      - 7101:80
+      - 7102:443
+volumes:
+  npm_cache:
+    driver: local
