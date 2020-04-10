@@ -1,46 +1,21 @@
 # Docker Reactjs
 
-This is docker base image to run application that using Reactjs. This image have 2 base service
+Docker images that suitable to run reactjs application. This image has two software preconfigured.
 
-1. Apache to run the build script in web browser
-2. Yarn to run the node command
+1. Apache HTTP Server with SSL and using `build/` directory as web root 
+2. Node v12 & NPM to compile reactjs package.
 
-## Requirements:
+## How to use:
 
-1. The docker image is expecting the volume mounted to `/app` directory and the web public directory located at `/app/build`
+The docker image is expecting the volume mounted to `/var/www/app` directory, and the web public directory located at `/var/www/app/build`.
+We only need sync the volume and make sure we have the `/app/build` directory exist. See the 
+[docker-compose.yml](./docker-compose.yml) file for example. 
 
-## Docker commands
+## How to develop
 
-### Build
-
-```shell script
-docker build -t vvvroom/reactjs .
-```
-
-### Run 
-
-```shell script
-docker run --rm \
-    -v ${PWD}/test-repo:/app \
-    -p 9000:443 \
-    vvvroom/reactjs
-```
-
-### Debug
-
-Command below will SSH into the containers
-
-```shell script
-docker run --rm -it vvvroom/reactjs bash
-```
-
-### Push 
-
-```shell script
-docker push vvvroom/reactjs
-```
-
-## Caveats
+1. Run `docker-compose up` to start the containers
+1. Open in browser `http://localhost:7101` to HTTP 
+1. Open in browser `https://localhost:7102` to HTTPS 
 
 ### SSH Private Key
 Since most of the time we will most likely install a package from git private repositories.

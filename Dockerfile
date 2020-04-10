@@ -1,11 +1,5 @@
-FROM gusdecool/httpd
-
+FROM httpd
 WORKDIR /app
-
-# Inherited ENVs
-ENV PUBLIC_DIR /app/build
-
-# Local ENVs
 ENV USER_HOME_DIR /root
 
 #--------------------------------------------------------------------------------------------------
@@ -14,17 +8,16 @@ ENV USER_HOME_DIR /root
 
 # APT update and install base package
 RUN apt-get update
-RUN apt-get install -y curl git openssh-client bash
+RUN apt-get install -y curl git openssh-client bash vim
 
-# Install Node v10 LTS, "gcc g++ make" is development tools to enable node build native addons
+#--------------------------------------------------------------------------------------------------
+# Install Node v12 LTS
+#--------------------------------------------------------------------------------------------------
+
+# "gcc g++ make" is development tools to enable node build native addons
 RUN apt-get install -y gcc g++ make
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
-
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn
 
 #--------------------------------------------------------------------------------------------------
 # Skip Host verification for git
@@ -39,3 +32,26 @@ RUN echo "StrictHostKeyChecking no " > ${USER_HOME_DIR}/.ssh/config
 
 # Allow root user to execute script command
 RUN npm config set unsafe-perm true
+
+#--------------------------------------------------------------------------------------------------
+# Setup Apache config
+#--------------------------------------------------------------------------------------------------
+
+# Set Apache root directory
+ENV APACHE_DOCUMENT_ROOT /app/build
+RUN sed -ri -e 's!/usr/local/apache2/htdocs!${APACHE_DOCUMENT_ROOT}!g' /usr/local/apache2/conf/httpd.conf
+
+# Setup SSL
+COPY ./ssl-certificate /ssl-certificate
+
+RUN sed -ri \
+    -e 's!/usr/local/apache2/htdocs!${APACHE_DOCUMENT_ROOT}!g' \
+    -e 's!/usr/local/apache2/conf/server.crt!/ssl-certificate/server.crt!g' \
+    -e 's!/usr/local/apache2/conf/server.key!/ssl-certificate/server.key!g' \
+    /usr/local/apache2/conf/extra/httpd-ssl.conf
+
+RUN sed -i \
+    -e 's/^#\(Include .*httpd-ssl.conf\)/\1/' \
+    -e 's/^#\(LoadModule .*mod_ssl.so\)/\1/' \
+    -e 's/^#\(LoadModule .*mod_socache_shmcb.so\)/\1/' \
+    /usr/local/apache2/conf/httpd.conf
