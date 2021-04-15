@@ -1,14 +1,25 @@
 version: '3.7'
 services:
-  app:
-    image: vvvroom/reactjs
-    build: ./
+  node12:
+    image: vvvroom/reactjs:12
+    build:
+      context: ./
+      dockerfile: node12.Dockerfile
     volumes:
       - ./app:/app
       - npm_cache:/root/.npm
     ports:
       - 7101:80
       - 7102:443
+  node14:
+    image: vvvroom/reactjs:14
+    build:
+      context: ./
+      dockerfile: node14.Dockerfile
+    volumes:
+      - ./app:/app
+      - npm_cache:/root/.npm
+    ports:
+      - 7103:80
 volumes:
   npm_cache:
-    driver: local
